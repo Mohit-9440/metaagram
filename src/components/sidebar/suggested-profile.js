@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { updateLoggedInUserFollowing, updateFollowedUserFollowers } from '../../services/firebase';
+import { 
+    updateLoggedInUserFollowing, 
+    updateFollowedUserFollowers 
+} from '../../services/firebase';
 
 export default function SuggestedProfile({ profileDocId, username, profileId, userId, loggedInUserDocId }) {
     const [followed, setFollowed] = useState(false);
 
     async function handleFollowUser() {
         setFollowed(true);
+
+        // updating following of LoggedIn user
         await updateLoggedInUserFollowing(loggedInUserDocId, profileId, false);
-        await updateFollowedUserFollowers(profileDocId, userId, false )
+
+        // updating followers of the user who has been followed
+        await updateFollowedUserFollowers(profileDocId, userId, false);
     }
 
     return !followed ? (
@@ -18,21 +25,21 @@ export default function SuggestedProfile({ profileDocId, username, profileId, us
                 <img
                     className="rounded-full w-8 flex mr-3"
                     src={`/images/avatars/${username}.jpg`}
-                    alt=""
+                    alt={username}
                 />
                 <Link to={`/p/${username}`}>
                     <p className="font-bold text-sm">{username}</p>
                 </Link>
             </div>
-            <div>
-                <button
-                    className="text-xs font-bold text-blue-medium"
-                    type="button"
-                    onClick={handleFollowUser}
-                >
+            <button
+                className="text-xs font-bold text-blue-medium"
+                type="button"
+                onClick={() => {
+                    handleFollowUser();
+                }}
+            >
                 Follow    
-                </button>
-            </div>
+            </button>
         </div>
     ) : null;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Skeleton from 'react-loading-skeleton';
@@ -5,18 +6,18 @@ import { getSuggestedProfiles } from '../../services/firebase';
 import SuggestedProfile from './suggested-profile';
 
 export default function Suggestions({ userId, following, loggedInUserDocId }) {
-    const [profiles, setProfiles] = useState(null);
+    const [profiles, setProfile] = useState(null);
   
     useEffect(() => {
       async function suggestedProfiles() {
         const response = await getSuggestedProfiles(userId, following);
-        setProfiles(response);
+        setProfile(response);
       }
   
       if (userId) {
         suggestedProfiles();
       }
-    }, [following, userId]);
+    }, [userId]);
     // hint: use the firebase service
     // getSuggestionsProfiles
     // call the async function     within useEffect
@@ -24,7 +25,7 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
     // go ahead and render (wait on the profiles as in 'skeleton')
 
     return !profiles ? (
-        <Skeleton count={10} height={150} className="mt-5" /> 
+        <Skeleton count={1} height={150} className="mt-5" /> 
     ) : profiles.length > 0 ? (
         <div className="rounded flex flex-col">
             <div className="text-sm flex items-center align-items justify-between mb-2">
@@ -36,7 +37,7 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
                         key={profile.docId}  
                         profileDocId={profile.docId}
                         username={profile.username}
-                        profileId={profile.userId}
+                        ProfileId={profile.userId}
                         userId={userId}
                         loggedInUserDocId={loggedInUserDocId}
                     />
