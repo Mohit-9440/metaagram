@@ -16,7 +16,7 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
       if (userId) {
         suggestedProfiles();
       }
-    }, [userId]);
+    }, [following, userId]);
     // hint: use the firebase service
     // getSuggestionsProfiles
     // call the async function     within useEffect
