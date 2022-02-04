@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import FirebaseContext from '../../context/firebase';
 import UserContext from '../../context/user';
 
-export default function Actions({ docId, totalLikes, LikedPhoto, handleFocus }) {
+export default function Actions({ docId, totalLikes, likedPhoto, handleFocus }) {
     const {
-        user: { uid: userId = '' }
+        user: { uid: userId },
     } = useContext(UserContext);
     
     const [toggleLiked, setToggleLiked] = useState(likedPhoto);
@@ -20,12 +20,12 @@ export default function Actions({ docId, totalLikes, LikedPhoto, handleFocus }) 
             .collection('photos')
             .doc(docId)
             .update({
-                likes: toggleLiked ? FieldValue.arrayRemove(userId) : FieldValue.arrayUnion(userId)
+                likes: toggleLiked
+                    ? FieldValue.arrayRemove(userId)
+                    : FieldValue.arrayUnion(userId),
             });
-
         setLikes((likes) => (toggleLiked ? likes - 1 : likes + 1 ));
     };
-
     return (
         <>
             <div className="flex justify-between p-4">
@@ -33,16 +33,16 @@ export default function Actions({ docId, totalLikes, LikedPhoto, handleFocus }) 
                     <svg
                         onClick={handleToggleLiked}
                         onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
-                            handleToggleLiked();
-                        }
+                            if (event.key === 'Enter') {
+                                handleToggleLiked();
+                            }
                         }}
                         xmlns='http://www.w3.org/2000/svg'
                         fill='none'
                         viewBox='0 0 24 24'
                         stroke='currentColor'
                         className={`w-8 mr-4 select-none cursor-pointer ${
-                        toggleLiked ? 'fill-red text-red-primary' : 'text-black-light'
+                            toggleLiked ? 'fill-red text-red-primary' : 'text-black-light'
                         }`}
                     >
                         <path
@@ -74,11 +74,16 @@ export default function Actions({ docId, totalLikes, LikedPhoto, handleFocus }) 
                     </svg>
                 </div>
             </div>
+            <div className="p-4 py-0">
+                <p className="font-bold">
+                    {likes === 1 ? `${likes} like` : `${likes} likes`}
+                </p>
+            </div>
         </>
-    )
+    );
 }
 
-Action.propTypes = {
+Actions.propTypes = {
     docId: PropTypes.string.isRequired,
     totalLikes: PropTypes.number.isRequired,
     likedPhoto: PropTypes.bool.isRequired,
